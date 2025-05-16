@@ -1,8 +1,5 @@
 import { pool } from "../db.js";
 
-
-
-
 export const getSoftwareById = async (req, res) => {
   try {
     const querySQL = "SELECT * FROM softwares WHERE id = ?";
@@ -19,10 +16,6 @@ export const getSoftwareById = async (req, res) => {
     console.error(error);
   }
 };
-
-
-
-
 
 export const getSoftwares = async (req, res) => {
   try {
@@ -67,7 +60,7 @@ export const updateSoftwares = async (req, res) => {
     const querySQL =
       "UPDATE softwares SET nombre = ?, espaciomb = ?, versionsoft = ?, precio = ? WHERE id = ?";
     const { id } = req.params;
-    const {nombre, espaciomb, versionsoft, precio } = req.body;
+    const { nombre, espaciomb, versionsoft, precio } = req.body;
 
     const [results] = await pool.query(querySQL, [
       nombre,
@@ -82,17 +75,15 @@ export const updateSoftwares = async (req, res) => {
         status: false,
         message: "Software no encontrado",
       });
+    } else {
+      return res.send({
+        status: true,
+        message: "Software actualizado correctamente",
+      });
     }
-
-    res.sendStatus(200).json({
-      status: true,
-      message: "Software actualizado correctamente",
-    });
-    
   } catch (error) {
     console.error(error);
   }
-  
 };
 
 export const deleteSoftwares = async (req, res) => {
@@ -104,18 +95,16 @@ export const deleteSoftwares = async (req, res) => {
     const [results] = await pool.query(querySQL, [id]);
 
     if (results.affectedRows === 0) {
-       return res.status(404).json({
+      return res.status(404).json({
         status: false,
-        message: "Software no encontrado"});
-
-    } 
-
-    res.send({
-      status: true,
-      message: "Software eliminado correctamente",
-    });
-
-
+        message: "Software no encontrado / ID no valido",
+      });
+    } else {
+      res.send({
+        status: true,
+        message: "Software eliminado correctamente",
+      });
+    }
   } catch (error) {
     console.error(error);
   }
